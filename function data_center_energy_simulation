@@ -1,0 +1,40 @@
+function data_center_energy_simulation
+    % Create the GUI
+    fig = uifigure('Name', 'Data Center Energy Efficiency Simulator', 'Position', [100 100 400 300]);
+
+    % Server Load Input
+    uilabel(fig, 'Position', [20 250 100 22], 'Text', 'Server Load (%)');
+    serverLoadInput = uieditfield(fig, 'numeric', 'Position', [150 250 100 22]);
+
+    % Cooling System Efficiency Input
+    uilabel(fig, 'Position', [20 200 150 22], 'Text', 'Cooling Efficiency (PUE)');
+    coolingEfficiencyInput = uieditfield(fig, 'numeric', 'Position', [150 200 100 22]);
+
+    % Hardware Configurations Input
+    uilabel(fig, 'Position', [20 150 150 22], 'Text', 'Hardware Power Rating (kW)');
+    hardwarePowerInput = uieditfield(fig, 'numeric', 'Position', [150 150 100 22]);
+
+    % Calculate Button
+    calculateButton = uibutton(fig, 'Position', [150 100 100 22], 'Text', 'Calculate', ...
+        'ButtonPushedFcn', @(btn, event) calculateEnergyConsumption(serverLoadInput.Value, coolingEfficiencyInput.Value, hardwarePowerInput.Value));
+
+    % Output Labels
+    totalEnergyLabel = uilabel(fig, 'Position', [20 50 350 22], 'Text', 'Total Energy Consumption: ');
+    energySavingsLabel = uilabel(fig, 'Position', [20 20 350 22], 'Text', 'Potential Energy Savings: ');
+
+    function calculateEnergyConsumption(serverLoad, coolingEfficiency, hardwarePower)
+        % Energy Consumption Model
+        serverEnergy = serverLoad / 100 * hardwarePower;
+        coolingEnergy = serverEnergy * (coolingEfficiency - 1);
+        totalEnergy = serverEnergy + coolingEnergy;
+
+        % Potential Energy Savings (example calculation)
+        optimalPUE = 1.2; % Example optimal PUE
+        optimalCoolingEnergy = serverEnergy * (optimalPUE - 1);
+        potentialSavings = coolingEnergy - optimalCoolingEnergy;
+
+        % Update Output Labels
+        totalEnergyLabel.Text = sprintf('Total Energy Consumption: %.2f kW', totalEnergy);
+        energySavingsLabel.Text = sprintf('Potential Energy Savings: %.2f kW', potentialSavings);
+    end
+end
